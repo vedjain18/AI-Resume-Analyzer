@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Resume Analyzer</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- ================= HEADER ================= -->
+
+    <header class="hero">
+
+        <div class="hero-content">
+
+            <div class="logo">
+                🤖
+            </div>
+
+            <h1>AI Resume Analyzer</h1>
+
+            <p>
+                Analyze your resume against a job description
+                and discover your job compatibility.
+            </p>
+
+        </div>
+
+    </header>
+
+
+    <!-- ================= MAIN ================= -->
+
+    <main class="container">
+
+
+        <!-- ================= INPUT SECTION ================= -->
+
+        <section id="input-section" class="card">
+
+            <div class="section-title">
+
+                <div class="section-icon">
+                    📄
+                </div>
+
+                <div>
+                    <h2>Analyze Your Resume</h2>
+
+                    <p>
+                        Upload your resume and paste the job description.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <!-- Resume -->
+
+            <div class="form-group">
+
+                <label class="label">
+                    Resume
+                </label>
+
+                <div class="upload-box">
+
+                    <div class="upload-icon">
+                        📄
+                    </div>
+
+                    <h3>
+                        Upload your resume
+                    </h3>
+
+                    <p>
+                        Supported formats: PDF and DOCX
+                    </p>
+
+                    <!-- IMPORTANT:
+                         We are NOT hiding this input.
+                         This makes file selection reliable. -->
+
+                    <input
+                        type="file"
+                        id="resume"
+                        accept=".pdf,.docx"
+                    >
+
+                    <div
+                        id="file-name"
+                        class="file-name"
+                    >
+                        No file selected
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Job Description -->
+
+            <div class="form-group">
+
+                <label
+                    for="job-description"
+                    class="label"
+                >
+                    Job Description
+                </label>
+
+                <textarea
+                    id="job-description"
+                    placeholder="Paste the job description here..."
+                ></textarea>
+
+            </div>
+
+
+            <!-- Analyze -->
+
+            <button
+                id="analyze-btn"
+                class="analyze-button"
+            >
+
+                🚀 Analyze Resume
+
+            </button>
+
+        </section>
+
+
+        <!-- ================= LOADING ================= -->
+
+        <div
+            id="loading"
+            class="loading hidden"
+        >
+
+            <div class="spinner"></div>
+
+            <h3>
+                Analyzing your resume...
+            </h3>
+
+            <p>
+                Comparing your resume with the job requirements.
+            </p>
+
+        </div>
+
+
+        <!-- ================= RESULTS ================= -->
+
+        <section
+            id="results"
+            class="results hidden"
+        >
+
+            <div class="results-header">
+
+                <span class="result-label">
+                    ANALYSIS COMPLETE
+                </span>
+
+                <h2>
+                    Resume Analysis Result
+                </h2>
+
+                <p>
+                    Here's how your resume matches the job description.
+                </p>
+
+            </div>
+
+
+            <!-- Main Score -->
+
+            <div class="main-score-card">
+
+                <div class="score-circle">
+
+                    <div id="match-score">
+                        0%
+                    </div>
+
+                </div>
+
+                <div class="score-info">
+
+                    <h3>
+                        Compatibility Score
+                    </h3>
+
+                    <p>
+                        Overall resume-job compatibility
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- Score Cards -->
+
+            <div class="score-grid">
+
+                <div class="score-card">
+
+                    <div class="score-icon">
+                        📊
+                    </div>
+
+                    <div>
+
+                        <p>
+                            Text Similarity
+                        </p>
+
+                        <h3 id="similarity-score">
+                            0%
+                        </h3>
+
+                    </div>
+
+                </div>
+
+
+                <div class="score-card">
+
+                    <div class="score-icon">
+                        🧠
+                    </div>
+
+                    <div>
+
+                        <p>
+                            Skill Match
+                        </p>
+
+                        <h3 id="skill-score">
+                            0%
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Matching Skills -->
+
+            <div class="result-card matching-card">
+
+                <div class="result-card-header">
+
+                    <span>
+                        ✅
+                    </span>
+
+                    <div>
+
+                        <h3>
+                            Matching Skills
+                        </h3>
+
+                        <p>
+                            Skills found in both your resume and the job description.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div
+                    id="matching-skills"
+                    class="skills-container"
+                ></div>
+
+            </div>
+
+
+            <!-- Missing Skills -->
+
+            <div class="result-card missing-card">
+
+                <div class="result-card-header">
+
+                    <span>
+                        ⚠️
+                    </span>
+
+                    <div>
+
+                        <h3>
+                            Missing Skills
+                        </h3>
+
+                        <p>
+                            Skills required by the job but not detected in your resume.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div
+                    id="missing-skills"
+                    class="skills-container"
+                ></div>
+
+            </div>
+
+
+            <!-- Resume-only Skills -->
+
+            <div class="result-card resume-card">
+
+                <div class="result-card-header">
+
+                    <span>
+                        📌
+                    </span>
+
+                    <div>
+
+                        <h3>
+                            Resume-only Skills
+                        </h3>
+
+                        <p>
+                            Skills detected in your resume but not required by this job.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div
+                    id="resume-only-skills"
+                    class="skills-container"
+                ></div>
+
+            </div>
+
+
+            <!-- Recommendations -->
+
+            <div class="result-card recommendation-card">
+
+                <div class="result-card-header">
+
+                    <span>
+                        💡
+                    </span>
+
+                    <div>
+
+                        <h3>
+                            AI Recommendations
+                        </h3>
+
+                        <p>
+                            Suggestions to improve resume-job alignment.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <ul id="recommendations"></ul>
+
+            </div>
+
+
+            <!-- Reset -->
+
+            <button
+                id="reset-btn"
+                class="reset-button"
+            >
+                🔄 Analyze Another Resume
+            </button>
+
+        </section>
+
+    </main>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+
+        <p>
+            AI Resume Analyzer • Python • FastAPI • Machine Learning
+        </p>
+
+    </footer>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
